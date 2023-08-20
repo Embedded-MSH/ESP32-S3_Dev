@@ -1,2 +1,3 @@
 CompileFlags:
-  Add: []
+  Add: [-D__XTENSA__, --target=mipsel, -mlong-calls, -isysroot=/home/layton/.espressif/tools/xtensa-esp32s3-elf/esp-12.2.0_20230208/xtensa-esp32s3-elf/xtensa-esp32s3-elf, -I/home/layton/.espressif/tools/xtensa-esp32s3-elf/esp-12.2.0_20230208/xtensa-esp32s3-elf/xtensa-esp32s3-elf/include/]
+  Remove: [-fno-tree-switch-conversion, -mtext-section-literals, -mlongcalls, -fstrict-volatile-bitfields]
