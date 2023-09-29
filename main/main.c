@@ -17,9 +17,15 @@ void app_main(void)
     init_led();
 
     init_lcd();
+    size_t count = 0;
+    blink_led();
     while (1) {
         vTaskDelay(pdMS_TO_TICKS(10));
-        // blink_led();
+        count += 1;
+        if (count > 100) {
+            count = 0;
+            blink_led();
+        }
         lv_timer_handler();
     }
 }
