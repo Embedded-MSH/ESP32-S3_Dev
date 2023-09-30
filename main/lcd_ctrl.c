@@ -82,41 +82,21 @@ static void example_lvgl_port_update_callback(lv_disp_drv_t* drv)
             // Rotate LCD display
             esp_lcd_panel_swap_xy(panel_handle, false);
             esp_lcd_panel_mirror(panel_handle, true, false);
-#if CONFIG_EXAMPLE_LCD_TOUCH_ENABLED
-            // Rotate LCD touch
-            esp_lcd_touch_set_mirror_y(tp, false);
-            esp_lcd_touch_set_mirror_x(tp, false);
-#endif
             break;
         case LV_DISP_ROT_90:
             // Rotate LCD display
             esp_lcd_panel_swap_xy(panel_handle, true);
             esp_lcd_panel_mirror(panel_handle, true, true);
-#if CONFIG_EXAMPLE_LCD_TOUCH_ENABLED
-            // Rotate LCD touch
-            esp_lcd_touch_set_mirror_y(tp, false);
-            esp_lcd_touch_set_mirror_x(tp, false);
-#endif
             break;
         case LV_DISP_ROT_180:
             // Rotate LCD display
             esp_lcd_panel_swap_xy(panel_handle, false);
             esp_lcd_panel_mirror(panel_handle, false, true);
-#if CONFIG_EXAMPLE_LCD_TOUCH_ENABLED
-            // Rotate LCD touch
-            esp_lcd_touch_set_mirror_y(tp, false);
-            esp_lcd_touch_set_mirror_x(tp, false);
-#endif
             break;
         case LV_DISP_ROT_270:
             // Rotate LCD display
             esp_lcd_panel_swap_xy(panel_handle, true);
             esp_lcd_panel_mirror(panel_handle, false, false);
-#if CONFIG_EXAMPLE_LCD_TOUCH_ENABLED
-            // Rotate LCD touch
-            esp_lcd_touch_set_mirror_y(tp, false);
-            esp_lcd_touch_set_mirror_x(tp, false);
-#endif
             break;
     }
 }
