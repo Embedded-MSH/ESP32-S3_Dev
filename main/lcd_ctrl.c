@@ -225,6 +225,8 @@ void init_lcd()
 
     ESP_LOGI(TAG, "Install LVGL tick timer");
     // Tick interface for LVGL (using esp_timer to generate 2ms periodic event)
+    // When calling lv_timer_handler(), LVGL will check tick to update panel if
+    // there is a timer
     const esp_timer_create_args_t lvgl_tick_timer_args = {
         .callback = &example_increase_lvgl_tick,
         .name = "lvgl_tick"
