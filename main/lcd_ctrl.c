@@ -130,9 +130,13 @@ void init_lcd()
         .sclk_io_num = EXAMPLE_PIN_NUM_SCLK,
         .mosi_io_num = EXAMPLE_PIN_NUM_MOSI,
         .miso_io_num = EXAMPLE_PIN_NUM_MISO,
-        .quadwp_io_num = -1,
-        .quadhd_io_num = -1,
+        .quadwp_io_num = -1,   // Quad Write Protect, set -1 if not used
+        .quadhd_io_num = -1,   // Quad High-Speed Data
+        // The LCD's horizontal resolution * Maximum number of rows transferred
+        // (80) * Size of each pixel (16 bits) gives the maximum amount of data
+        // to transfer at once
         .max_transfer_sz = EXAMPLE_LCD_H_RES * 80 * sizeof(uint16_t),
+
     };
 
     ESP_ERROR_CHECK(spi_bus_initialize(LCD_HOST, &buscfg, SPI_DMA_CH_AUTO));
@@ -141,14 +145,20 @@ void init_lcd()
     esp_lcd_panel_io_handle_t io_handle = NULL;
 
     esp_lcd_panel_io_spi_config_t io_config = {
-        .dc_gpio_num = EXAMPLE_PIN_NUM_LCD_DC,
-        .cs_gpio_num = EXAMPLE_PIN_NUM_LCD_CS,
-        .pclk_hz = EXAMPLE_LCD_PIXEL_CLOCK_HZ,
-        .lcd_cmd_bits = EXAMPLE_LCD_CMD_BITS,
-        .lcd_param_bits = EXAMPLE_LCD_PARAM_BITS,
-        .spi_mode = 0,
-        .trans_queue_depth = 10,
+        .dc_gpio_num = EXAMPLE_PIN_NUM_LCD_DC,   // Data/Command pin
+        .cs_gpio_num = EXAMPLE_PIN_NUM_LCD_CS,   // Chip select pin
+        .pclk_hz = EXAMPLE_LCD_PIXEL_CLOCK_HZ,   // Pixel clock frequency
+        .lcd_cmd_bits = EXAMPLE_LCD_CMD_BITS,    // Bit number used to represent
+                                                 // command
+        .lcd_param_bits = EXAMPLE_LCD_PARAM_BITS,   // Bit number used to
+                                                    // represent parameter
+        .spi_mode = 0,                              // SPI mode (0 ~ 3)
+        .trans_queue_depth = 10,   // Transaction queue depth, the transaction
+                                   // queue is used to send commands and
+                                   // parameters to the LCD driver
+        // Callback function to notify the LCD driver that the transaction queue
         .on_color_trans_done = example_notify_lvgl_flush_ready,
+        // user_data
         .user_ctx = &disp_drv,
     };
 
@@ -157,11 +167,13 @@ void init_lcd()
                                              &io_config,
                                              &io_handle));
 
-    esp_lcd_panel_handle_t panel_handle = NULL;
+    esp_lcd_panel_handle_t panel_handle = NULL;   // LCD panel handle
+
+    // LCD panel configuration
     esp_lcd_panel_dev_config_t panel_config = {
-        .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,
-        .rgb_endian = LCD_RGB_ENDIAN_BGR,
-        .bits_per_pixel = 16,
+        .reset_gpio_num = EXAMPLE_PIN_NUM_LCD_RST,   // Reset pin
+        .rgb_endian = LCD_RGB_ENDIAN_BGR,            // RGB pixel format
+        .bits_per_pixel = 16,   // Bits per pixel (16 bits for RGB565 format)
     };
 
     ESP_LOGI(TAG, "Install GC9A01 panel driver");
@@ -169,8 +181,10 @@ void init_lcd()
     ESP_ERROR_CHECK(
         esp_lcd_new_panel_gc9a01(io_handle, &panel_config, &panel_handle));
 
-    ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));
-    ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));
+
+    // Initialize the LCD panel
+    ESP_ERROR_CHECK(esp_lcd_panel_reset(panel_handle));   // Reset LCD panel
+    ESP_ERROR_CHECK(esp_lcd_panel_init(panel_handle));   // Initialize LCD panel
     ESP_ERROR_CHECK(esp_lcd_panel_invert_color(panel_handle, true));
     ESP_ERROR_CHECK(esp_lcd_panel_mirror(panel_handle, true, false));
 
