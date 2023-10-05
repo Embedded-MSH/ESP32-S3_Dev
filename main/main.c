@@ -5,6 +5,7 @@
 #include "led_ctrl.h"
 #include "misc/lv_timer.h"
 #include "sdkconfig.h"
+#include "wifi_ap_ctrl.h"
 
 #include <stdio.h>
 
@@ -13,9 +14,14 @@ static const char* TAG = "Main";
 void app_main(void)
 {
     ESP_LOGI(TAG, "My ESP32-S3 Ctrl Test!");
-    /* Configure the peripheral according to the LED type */
+
+    ESP_LOGI(TAG, "Init Led Ctrl!");
     init_led();
 
+    ESP_LOGI(TAG, "Init WIFI AP MODE!");
+    init_ap_mode();
+
+    ESP_LOGI(TAG, "Init LCD SPI Ctrl!");
     init_lcd();
     size_t count = 0;
     blink_led();
