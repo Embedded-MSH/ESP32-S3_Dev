@@ -1,3 +1,5 @@
+#include "led_ctrl.h"
+
 #include "esp_log.h"
 #include "led_strip.h"
 
@@ -8,7 +10,6 @@ static const char* TAG = "LED";
 static uint8_t s_led_state = 0;
 
 static led_strip_handle_t led_strip;
-
 
 void blink_led(void)
 {
