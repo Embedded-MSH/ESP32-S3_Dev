@@ -1,0 +1,9 @@
+menu "18b20 PIN Configuration"
+    config 18b20_GPIO
+        int "18b20 GPIO number"
+        range ENV_GPIO_RANGE_MIN ENV_GPIO_OUT_RANGE_MAX
+        default 40 if IDF_TARGET_ESP32S3
+        default 40
+        help
+            GPIO number (IOxx) to ctrl 18b20 get data.
+endmenu

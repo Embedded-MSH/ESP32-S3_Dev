@@ -1,0 +1,3 @@
+dependencies:
+  idf: ">=4.4"
+  # espressif/esp-idf-cxx: "^1.0.0-beta"
