@@ -15,7 +15,7 @@
 static const char* TAG = "LCD Ctrl";
 
 // Using SPI2 in the example
-#define LCD_HOST SPI3_HOST
+#define LCD_HOST SPI2_HOST
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //////////////////// Please update the following configuration according to your
@@ -25,7 +25,7 @@ static const char* TAG = "LCD Ctrl";
 #define EXAMPLE_LCD_BK_LIGHT_ON_LEVEL 1
 #define EXAMPLE_LCD_BK_LIGHT_OFF_LEVEL !EXAMPLE_LCD_BK_LIGHT_ON_LEVEL
 #define EXAMPLE_PIN_NUM_SCLK 18
-#define EXAMPLE_PIN_NUM_MOSI 19
+#define EXAMPLE_PIN_NUM_MOSI 35   // 19 引脚已被占用为USB 差分D-
 #define EXAMPLE_PIN_NUM_MISO 21
 #define EXAMPLE_PIN_NUM_LCD_DC 5
 #define EXAMPLE_PIN_NUM_LCD_RST 3
