@@ -7,8 +7,13 @@
 // This demo UI is adapted from LVGL official example:
 // https://docs.lvgl.io/master/widgets/extra/meter.html#simple-meter
 
+#include "esp_log.h"
 #include "lvgl.h"
 
+
+static const char* TAG = "LCD Ctrl";
+
+lv_obj_t* obj = NULL;
 static lv_obj_t* meter;
 static lv_obj_t* btn;
 static lv_disp_rot_t rotation = LV_DISP_ROT_NONE;
@@ -27,6 +32,34 @@ static void btn_cb(lv_event_t* e)
     }
     lv_disp_set_rotation(disp, rotation);
 }
+
+
+void updateTemp(const char* temp)
+{
+    if (obj != NULL) {
+        lv_label_set_text(obj, temp);
+    }
+}
+
+void lv_example_label_1(lv_disp_t* disp)
+{
+    lv_obj_t* scr = lv_disp_get_scr_act(disp);
+    obj = lv_label_create(scr);
+
+    lv_label_set_long_mode(obj, LV_LABEL_LONG_WRAP); /*Break the long lines*/
+    lv_label_set_text(obj, "Initialize.......");
+    lv_obj_set_width(obj, 150); /*Set smaller width to make the lines wrap*/
+    lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, 0);
+    lv_obj_align(obj, LV_ALIGN_CENTER, 0, -40);
+
+    lv_obj_t* label2 = lv_label_create(scr);
+    lv_label_set_long_mode(label2,
+                           LV_LABEL_LONG_SCROLL_CIRCULAR); /*Circular scroll*/
+    lv_obj_set_width(label2, 150);
+    lv_label_set_text(label2, "It is a circularly scrolling text. ");
+    lv_obj_align(label2, LV_ALIGN_CENTER, 0, 40);
+}
+
 
 void example_lvgl_demo_ui(lv_disp_t* disp)
 {

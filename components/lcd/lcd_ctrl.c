@@ -43,6 +43,8 @@ static const char* TAG = "LCD Ctrl";
 #define EXAMPLE_LVGL_TICK_PERIOD_MS 2
 
 extern void example_lvgl_demo_ui(lv_disp_t* disp);
+extern void lv_example_label_1(lv_disp_t* disp);
+extern void lv_example_grid_x(lv_disp_t* disp);
 
 static bool
     example_notify_lvgl_flush_ready(esp_lcd_panel_io_handle_t panel_io,
@@ -240,5 +242,6 @@ void init_lcd()
                                  EXAMPLE_LVGL_TICK_PERIOD_MS * 1000));
 
     ESP_LOGI(TAG, "Display LVGL Meter Widget");
-    example_lvgl_demo_ui(disp);
+    // example_lvgl_demo_ui(disp);
+    lv_example_label_1(disp);
 }
