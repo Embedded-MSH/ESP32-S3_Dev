@@ -1,5 +1,6 @@
 #include "18b20_ctrl.h"
 #include "esp_log.h"
+#include "espnow-recv.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/semphr.h"
 #include "freertos/task.h"
@@ -7,12 +8,12 @@
 #include "led_ctrl.h"
 #include "misc/lv_timer.h"
 #include "sdkconfig.h"
-#include "wifi_ap_ctrl.h"
+// #include "wifi_ap_ctrl.h"
 
 #include <stdio.h>
 
 static TaskHandle_t lvgl_task_handle = NULL;
-static TaskHandle_t get_temperature_handle = NULL;
+// static TaskHandle_t get_temperature_handle = NULL;
 
 static const char* TAG = "Main";
 
@@ -56,6 +57,31 @@ void lvgl_task()
         lv_timer_handler();
     }
 }
+
+static esp_err_t app_handle(uint8_t* src_addr, void* data, size_t size,
+                            wifi_pkt_rx_ctrl_t* rx_ctrl)
+{
+    ESP_PARAM_CHECK(src_addr);
+    ESP_PARAM_CHECK(data);
+    ESP_PARAM_CHECK(size);
+    ESP_PARAM_CHECK(rx_ctrl);
+
+    static uint32_t count = 0;
+
+    ESP_LOGI(TAG,
+             "espnow_recv, <%" PRIu32 "> [%d][%d][%u]: %.*s",
+             count++,
+             rx_ctrl->channel,
+             rx_ctrl->rssi,
+             size,
+             size,
+             (char*)data);
+    char buffer[40] = { 0 };
+    memcpy(buffer, data, size);
+    updateTemp((char*)buffer);
+    return ESP_OK;
+}
+
 void app_main(void)
 {
     ESP_LOGI(TAG, "My ESP32-S3 init!");
@@ -63,26 +89,24 @@ void app_main(void)
     ESP_LOGI(TAG, "Init Led Ctrl!");
     init_led();
 
-    ESP_LOGI(TAG, "Init WIFI AP MODE!");
-    init_ap_mode();
+    // ESP_LOGI(TAG, "Init WIFI AP MODE!");
+    // init_ap_mode();
 
     ESP_LOGI(TAG, "Init LCD SPI Ctrl!");
     init_lcd();
-    blink_led();
-    DeviceAddress tempSensors[2];
-    ds18b20_init(0);
-    getTempAddresses(tempSensors);
-    ESP_LOGI(
-        TAG,
-        "Address 0: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x \n",
-        tempSensors[0][0],
-        tempSensors[0][1],
-        tempSensors[0][2],
-        tempSensors[0][3],
-        tempSensors[0][4],
-        tempSensors[0][5],
-        tempSensors[0][6],
-        tempSensors[0][7]);
+    // blink_led();
+    // DeviceAddress tempSensors[2];
+    // ds18b20_init(0);
+    // getTempAddresses(tempSensors);
+    // ESP_LOGI(
+    //     TAG,
+    //     "Address 0: 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x 0x%02x
+    //     \n", tempSensors[0][0], tempSensors[0][1], tempSensors[0][2],
+    //     tempSensors[0][3],
+    //     tempSensors[0][4],
+    //     tempSensors[0][5],
+    //     tempSensors[0][6],
+    //     tempSensors[0][7]);
     // ds18b20_setResolution(tempSensors, 1, 10);
 
     // Allow other core to finish initialization
@@ -96,35 +120,13 @@ void app_main(void)
                             1,
                             &lvgl_task_handle,
                             0);
-    xTaskCreatePinnedToCore(get_temperature_task,
-                            "get_temperature_task",
-                            1024 * 4,
-                            NULL,
-                            1,
-                            &get_temperature_handle,
-                            0);
-    while (1) {
+    // xTaskCreatePinnedToCore(get_temperature_task,
+    //                         "get_temperature_task",
+    //                         1024 * 4,
+    //                         NULL,
+    //                         1,
+    //                         &get_temperature_handle,
+    //                         0);
 
-        vTaskDelay(pdMS_TO_TICKS(1000));
-        // vTaskDelay(pdMS_TO_TICKS(10));
-        // count += 1;
-        // if (count > 100) {
-        //     count = 0;
-        //     blink_led();
-        //     // ds18b20_requestTemperatures();
-        //     // float temp1 =
-        //     ds18b20_getTempF((DeviceAddress*)tempSensors[0]);
-        //     // float temp3 =
-        //     ds18b20_getTempC((DeviceAddress*)tempSensors[0]);
-        //     // printf("Temperatures: %0.1fF \n", temp1);
-        //     // printf("Temperatures: %0.1fC \n", temp3);
-
-        //     float cTemp = ds18b20_get_temp();
-        //     char buffer[40] = { 0 };
-        //     snprintf(buffer, sizeof(buffer), "Temperature: %0.1fC\n", cTemp);
-        //     ESP_LOGI(TAG, "%s", buffer);
-        //     updateTemp(buffer);
-        // }
-        // lv_timer_handler();
-    }
+    init_espnow(app_handle);
 }
